@@ -26,7 +26,7 @@ export default async function handler(req, res) {
 
     if (req.method === "POST") {
         const { partNumber, machineNumber, rejectReason, username } = req.body;
-
+         console.log("Request Body:", req.body);
         if (!username || !partNumber || !machineNumber) {
             return res.status(400).json({ message: "Username, part number, and machine number are required" });
         }
