@@ -14,3 +14,12 @@ model employees {
   password    String    @db.VarChar(Max)
   created_at  DateTime? @default(now(), map: "DF__employees__creat__24927208") @db.DateTime
 }
+
+model part_machine_data {
+  id             Int       @id(map: "PK__part_mac__3213E83F32CEBF3A") @default(autoincrement())
+  part_number    String    @db.VarChar(Max)
+  machine_number String    @db.VarChar(Max)
+  reject_reason  String?   @db.VarChar(255)
+  created_by     String    @db.VarChar(255)
+  created_at     DateTime? @default(now(), map: "DF__part_mach__creat__36B12243") @db.DateTime
+}
