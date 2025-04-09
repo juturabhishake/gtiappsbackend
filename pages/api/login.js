@@ -5,7 +5,9 @@ const prisma = new PrismaClient();
 
 const cors = Cors({
     methods: ['POST', 'GET', 'HEAD'], 
-    origin: ['*', 'https://gtiappsbackend.vercel.app'], // Adjust this to your frontend URL
+    origin: "*",
+    allowedHeaders: ['Content-Type'], 
+    credentials: true, 
 });
 
 function runMiddleware(req, res, fn) {
