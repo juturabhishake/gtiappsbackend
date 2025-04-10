@@ -25,7 +25,7 @@ export default async function handler(req, res) {
     await runMiddleware(req, res, cors);
 
     if (req.method === "POST") {
-        const { partNumber, machineNumber, rejectReason, username } = req.body;
+        const { partNumber, machineNumber, rejectReason, username ,isreject} = req.body;
          console.log("Request Body:", req.body);
         if (!username || !partNumber || !machineNumber) {
             return res.status(400).json({ message: "Username, part number, and machine number are required" });
@@ -33,13 +33,13 @@ export default async function handler(req, res) {
 
         try {
             const insertResult = await prisma.$queryRaw`
-                EXEC insert_part_machine_data ${partNumber}, ${machineNumber}, ${rejectReason ?? 'Not rejected'}, ${username};
+                EXEC Save_PartTrace ${partNumber}, ${machineNumber}, ${isreject}, ${rejectReason ?? 'Not rejected'}, ${username};
             `;
 
             if (insertResult) {
                 return res.status(200).json({ message: "Inserted Successfully", data: insertResult });
             } else {
-                return res.status(500).json({ message: "Failed to insert part machine data" });
+                return res.status(500).json({ message: "Failed to Store data" });
             }
         } catch (error) {
             return res.status(500).json({ message: "Internal Server Error", error: error.message });
