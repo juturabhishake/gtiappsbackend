@@ -29,7 +29,15 @@ export default async function handler(req, res) {
         return res.status(405).json({ message: "Method not allowed" });
     }
 
-    const partNo = typeof req.body?.partNo === "string" ? req.body.partNo.trim() : "";
+    let partNo = typeof req.body?.partNo === "string" ? req.body.partNo.trim() : "";
+    const postedTransId = typeof req.body?.transId === "string" ? req.body.transId.trim() : "";
+    const transId = postedTransId || (partNo.includes("|") ? partNo : null);
+
+    // The posted value may still be the full QR transId (partNo|serialNo) —
+    // split it so only the real part number is used for the matrix lookup.
+    if (partNo.includes("|")) {
+        partNo = partNo.slice(0, partNo.lastIndexOf("|")).trim();
+    }
 
     if (!partNo) {
         return res.status(400).json({ message: "A partNo is required." });
@@ -54,7 +62,17 @@ export default async function handler(req, res) {
             data.productId = data.Product_Id;
         }
 
-        return res.status(200).json({ data, productId: data.Product_Id });
+        const serialNo = transId && transId.includes("|")
+            ? transId.slice(transId.lastIndexOf("|") + 1).trim()
+            : null;
+
+        return res.status(200).json({
+            data,
+            productId: data.Product_Id,
+            partNo,
+            transId,
+            serialNo,
+        });
     } catch (error) {
         console.error("Failed to fetch Product Matrix part details:", error);
         return res.status(500).json({ message: "Unable to fetch Product Matrix part details." });
