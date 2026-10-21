@@ -7,9 +7,12 @@ import QRCode from "qrcode";
 type PartCode = {
   productId: number;
   partNo: string;
+  serialNo: string;
 };
 
 type TabKey = "all" | "parts" | "machines";
+
+const serialNumberConfig = { date: "261016" } as const;
 
 const tabs: { id: TabKey; label: string }[] = [
   { id: "all", label: "All Part Nos QRs" },
@@ -25,7 +28,7 @@ function PartQrCard({ part }: { part: PartCode }) {
     let active = true;
 
     QRCode.toDataURL(
-      JSON.stringify({ partNo: part.partNo, productId: part.productId }),
+      `${part.partNo}|${part.serialNo}`,
       {
         errorCorrectionLevel: "M",
         margin: 2,
@@ -104,8 +107,14 @@ export default function Home() {
           throw new Error(`Request failed with status ${response.status}`);
         }
 
-        const result: { data: PartCode[] } = await response.json();
-        setParts(result.data);
+        const result: { data: Omit<PartCode, "serialNo">[] } =
+          await response.json();
+        setParts(
+          result.data.map((part, index) => ({
+            ...part,
+            serialNo: `${serialNumberConfig.date}${String(index + 1).padStart(3, "0")}`,
+          })),
+        );
         setError("");
       } catch (loadError) {
         if (controller.signal.aborted) return;

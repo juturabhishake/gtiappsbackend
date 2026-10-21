@@ -29,25 +29,32 @@ export default async function handler(req, res) {
         return res.status(405).json({ message: "Method not allowed" });
     }
 
-    const productId = Number(req.body?.productId);
     const partNo = typeof req.body?.partNo === "string" ? req.body.partNo.trim() : "";
 
-    if (!Number.isInteger(productId) || productId <= 0 || !partNo) {
-        return res.status(400).json({ message: "A valid productId and partNo are required." });
+    if (!partNo) {
+        return res.status(400).json({ message: "A partNo is required." });
     }
 
     try {
         const rows = await prisma.$queryRaw`
             EXEC dbo.GetProductMatrixPartDetails
-                @ProductId = ${productId},
                 @PartNo = ${partNo}
         `;
 
         if (!rows.length) {
-            return res.status(404).json({ message: `No Product Matrix row found for Product ID ${productId}.` });
+            return res.status(404).json({ message: `No Product Matrix row found for part number ${partNo}.` });
         }
 
-        return res.status(200).json({ data: rows[0] });
+        const row = rows[0];
+        const data = { ...row };
+
+        // Always expose the Product Id in the GET response. Product_Id is the
+        // canonical column returned by the ProductMatrix part lookup.
+        if (data.Product_Id !== undefined && data.Product_Id !== null) {
+            data.productId = data.Product_Id;
+        }
+
+        return res.status(200).json({ data, productId: data.Product_Id });
     } catch (error) {
         console.error("Failed to fetch Product Matrix part details:", error);
         return res.status(500).json({ message: "Unable to fetch Product Matrix part details." });

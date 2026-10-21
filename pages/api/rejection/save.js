@@ -79,8 +79,7 @@ export default async function handler(req, res) {
         const validationError = errorMessage.match(/Message: `([^`]+)`/);
         const sqlErrorCode = errorMessage.match(/Code: `(\d+)`/);
         const isValidationError = sqlErrorCode?.[1] === '50000'
-            || /^5000[1-9]$/.test(sqlErrorCode?.[1] || '')
-            || sqlErrorCode?.[1] === '50010';
+            || /^500(0[1-9]|1[0-2])$/.test(sqlErrorCode?.[1] || '');
         return res.status(isValidationError ? 400 : 500).json({
             message: validationError?.[1] || "Failed to save rejection entry.",
             ...(sqlErrorCode ? { code: sqlErrorCode[1] } : {}),
