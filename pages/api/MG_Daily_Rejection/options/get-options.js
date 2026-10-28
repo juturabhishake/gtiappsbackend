@@ -28,7 +28,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ message: `Method ${req.method} not allowed` });
     }
 
-    const { type, shopFloor, project } = req.body;
+    const { type, shopFloor, project, productId } = req.body;
 
     if (!type) {
         return res.status(400).json({ message: "Type is required." });
@@ -70,14 +70,22 @@ export default async function handler(req, res) {
                 formattedResults = toComboBoxOptions(results, 'DefectType');
                 break;
             case 'dimensions':
-                results = await prisma.$queryRaw`EXEC SP_GetDimensions`;
+                if (productId && !isNaN(parseInt(productId, 10))) {
+                    results = await prisma.$queryRaw`EXEC SP_GetDimensionsByProductId @ProductId = ${parseInt(productId, 10)}`;
+                } else {
+                    results = [];
+                }
                 formattedResults = results.map(d => ({
                     value: d.DimID.toString(),
                     label: `${d.DimType} | ${d.DimNo} | ${d.Nominal}`
                 }));
                 break;
             case 'employees':
-                results = await prisma.$queryRaw`EXEC SP_GetEmployees`;
+                if (productId && !isNaN(parseInt(productId, 10))) {
+                    results = await prisma.$queryRaw`EXEC SP_GetEmployeesByProductId @ProductId = ${parseInt(productId, 10)}`;
+                } else {
+                    results = [];
+                }
                 formattedResults = results.map(e => ({
                     value: e.EmployeeID,
                     label: `${e.EmployeeName} | ${e.EmployeeID}`

@@ -57,6 +57,26 @@ export default async function handler(req, res) {
             const formattedResults = toComboBoxOptions(results, 'DecisionName');
             return res.status(200).json(formattedResults);
         }
+        if (type === 'dimensions') {
+            const parsedProductId = productId ? parseInt(productId, 10) : null;
+            const results = (parsedProductId && !isNaN(parsedProductId))
+                ? await prisma.$queryRaw`EXEC SP_GetDimensionsByProductId @ProductId = ${parsedProductId}`
+                : [];
+            const formattedResults = results.map(d => ({
+                value: d.DimID.toString(),
+                label: `${d.DimType} | ${d.DimNo} | ${d.Nominal}`
+            }));
+            return res.status(200).json(formattedResults);
+        }
+        if (type === 'employees') {
+            const parsedProductId = productId ? parseInt(productId, 10) : null;
+            if (parsedProductId && !isNaN(parsedProductId)) {
+                const results = await prisma.$queryRaw`EXEC SP_GetEmployeesByProductId @ProductId = ${parsedProductId}`;
+                const formattedResults = toComboBoxOptions(results, 'EmployeeName');
+                return res.status(200).json(formattedResults);
+            }
+            return res.status(200).json([]);
+        }
         const results = await prisma.$queryRaw`EXEC SP_GetCastingOptions @Type = ${type}`;
         let formattedResults;
         
