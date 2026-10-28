@@ -23,3 +23,282 @@ model part_machine_data {
   created_by     String    @db.VarChar(255)
   created_at     DateTime? @default(now(), map: "DF__part_mach__creat__36B12243") @db.DateTime
 }
+
+model AccessTypes {
+  id          Int    @id(map: "PK_AccessTypes") @default(autoincrement())
+  access_type String @db.VarChar(50)
+}
+
+model Decisions {
+  DecisionID   Int    @id(map: "PK__Decision__C0F28966391C3D05") @default(autoincrement())
+  DecisionName String @db.VarChar(50)
+  SortOrder    Int?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model DefectArea {
+  DefectArea String? @db.VarChar(100)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model DefectMaster {
+  DefectProcess String? @db.VarChar(50)
+  DefectCode    String? @db.VarChar(50)
+  DefectType    String? @db.VarChar(250)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model DimMaster {
+  DimID      Int       @default(autoincrement())
+  ProductID  Int?
+  DimType    String?   @db.VarChar(50)
+  DimNo      String?   @db.VarChar(50)
+  Nominal    String?   @db.VarChar(100)
+  CreatedAt  DateTime  @db.DateTime
+  CreatedBy  String?   @db.VarChar(100)
+  ModifiedAt DateTime? @db.DateTime
+  ModifiedBy String?   @db.VarChar(100)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model ErrorLogs {
+  ID         Int     @default(autoincrement())
+  ErrorValue String? @db.VarChar(Max)
+  ERRORMSG   String? @db.VarChar(Max)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model FixturePosition {
+  FixPosition String? @db.VarChar(50)
+
+  @@ignore
+}
+
+model FoundAtLocations {
+  LocationID   Int    @id(map: "PK__FoundAtL__E7FEA4776AB0F5AB") @default(autoincrement())
+  LocationName String @db.VarChar(50)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model ISO_Calendar {
+  Id            Int       @default(autoincrement())
+  ISOYear       Int?
+  ISOWeek       Int?
+  WeekStartDate DateTime? @db.Date
+  WeekEndDate   DateTime? @db.Date
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model M_Department {
+  DeptID     Int     @default(autoincrement())
+  Department String  @db.VarChar(50)
+  Section    String  @db.VarChar(50)
+  Active     String? @default("Y", map: "DF__M_Departm__Activ__02084FDA") @db.Char(1)
+
+  @@ignore
+}
+
+model Operations {
+  OperationID   Int    @id(map: "PK__Operatio__A4F5FC647ED4289C") @default(autoincrement())
+  OperationName String @db.VarChar(50)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model PageRoleAccess {
+  id      Int     @default(autoincrement())
+  empId   String? @db.VarChar(255)
+  page_id Int?
+  access  Int?
+
+  @@ignore
+}
+
+model Pages {
+  id           Int     @id(map: "PK_Pages") @default(autoincrement())
+  page         String? @db.VarChar(Max)
+  url          String? @db.VarChar(Max)
+  access_types String? @db.VarChar(Max)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Params {
+  Id       Int     @default(autoincrement())
+  SP_Name  String? @db.VarChar(200)
+  XMLValue String? @db.Xml
+
+  @@ignore
+}
+
+model Part_Trace {
+  Id            Int       @id(map: "PK__Part_Tra__3214EC073FE7A7DA") @default(autoincrement())
+  Part_No       String    @db.VarChar(50)
+  Serial_No     String    @db.VarChar(10)
+  Machine_No    String    @db.VarChar(30)
+  OPNo          Int?
+  Is_Rejected   Int?
+  Reject_Reason String?   @db.VarChar(500)
+  Created_By    String    @db.VarChar(50)
+  Created_Date  DateTime? @default(now(), map: "DF__Part_Trac__Creat__3A81B327") @db.DateTime
+}
+
+model ProductionEntry {
+  ProductionEntryId BigInt    @id(map: "PK_ProductionEntry") @default(autoincrement())
+  ProductId         Int
+  PartNo            String    @db.NVarChar(255)
+  ScrapDate         DateTime? @db.Date
+  RejectedOn        DateTime? @db.Date
+  FoundAt           String?   @db.NVarChar(255)
+  LeakCode          String?   @db.NVarChar(255)
+  Shift             String?   @db.NVarChar(100)
+  ShopFloor         String?   @db.NVarChar(255)
+  PartName          String?   @db.NVarChar(255)
+  BhChThIm          String?   @db.NVarChar(255)
+  OP                String?   @db.NVarChar(100)
+  FixPos            String?   @db.NVarChar(255)
+  DefectType        String?   @db.NVarChar(255)
+  Dimension         String?   @db.NVarChar(100)
+  Actual            Decimal?  @db.Decimal(18, 4)
+  Qty               Decimal?  @db.Decimal(18, 3)
+  OperatorName      String?   @db.NVarChar(255)
+  LeaderName        String?   @db.NVarChar(255)
+  Decision          String?   @db.NVarChar(255)
+  RejectionReason   String?   @db.NVarChar(Max)
+  TargetDate        DateTime? @db.Date
+  Status            String?   @db.NVarChar(100)
+  CorrectiveAction  String?   @db.NVarChar(Max)
+  CreatedBy         String?   @db.NVarChar(255)
+  ProductDetailsXml String?   @db.Xml
+  CreatedAt         DateTime  @default(dbgenerated("sysutcdatetime()"), map: "DF_ProductionEntry_CreatedAt")
+}
+
+model ProductMatrix {
+  Product_Id        Int       @id(map: "PK_ProductMatrix") @default(autoincrement())
+  Project           String?   @db.VarChar(255)
+  Status            String?   @db.VarChar(20)
+  Customer          String?   @db.VarChar(255)
+  CustLocation      String?   @db.VarChar(255)
+  CustCity          String?   @db.VarChar(255)
+  WHLocation        String?   @db.VarChar(255)
+  DeliveryLoc       String?   @db.VarChar(255)
+  PartDesc          String?   @db.VarChar(255)
+  CastRR            Int?
+  MachRR            Int?
+  AssyRR            Int?
+  Location          String?   @db.VarChar(255)
+  Cast_PartNo       String?   @db.VarChar(255)
+  Cast_Dwg_Rev      String?   @db.VarChar(5)
+  Cast_Part_Rev     String?   @db.VarChar(5)
+  Cast_Wt           Float?
+  Cast_Appr         String?   @db.VarChar(10)
+  Mach_PartNo       String?   @db.VarChar(255)
+  Mach_Dwg_Rev      String?   @db.VarChar(5)
+  Mach_Part_Rev     String?   @db.VarChar(5)
+  Mach_Wt           Float?
+  Mach_Appr         String?   @db.VarChar(10)
+  Assy_PartNo       String?   @db.VarChar(255)
+  Assy_Dwg_Rev      String?   @db.VarChar(5)
+  Assy_Part_Rev     String?   @db.VarChar(5)
+  Assy_Wt           Float?
+  Assy_Appr         String?   @db.VarChar(10)
+  Ship_PartNo       String?   @db.VarChar(255)
+  HS_PartNo         String?   @db.VarChar(255)
+  Proj_Status       String?   @db.VarChar(10)
+  SOP_Date          DateTime? @db.DateTime
+  Pmpd              String?   @db.VarChar(50)
+  Saletype          String?   @db.VarChar(5)
+  InstallCapa       Int?
+  Boxqty            Int?
+  Material          String?   @db.VarChar(255)
+  Matl_Rev          String?   @db.VarChar(255)
+  Cust_Material     String?   @db.VarChar(50)
+  Cust_Material_Rev String?   @db.VarChar(10)
+  Pkg_Wt            Decimal?  @db.Decimal(18, 3)
+  CreatedDate       DateTime? @default(now(), map: "CDF_Date") @db.DateTime
+  CreatedBy         String?   @db.VarChar(10)
+  UpdatedDate       DateTime? @db.DateTime
+  UpdatedBy         String?   @db.VarChar(10)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model reject_options {
+  id    Int     @default(autoincrement())
+  label String? @db.VarChar(Max)
+  value String? @db.VarChar(Max)
+
+  @@ignore
+}
+
+model RejectionEntry {
+  RejectionEntryId BigInt    @id(map: "PK_RejectionEntry") @default(autoincrement())
+  ProductId        Int
+  PartNo           String    @db.NVarChar(255)
+  ScrapDate        DateTime? @db.Date
+  RejectedOn       DateTime? @db.Date
+  FoundAt          String?   @db.NVarChar(255)
+  LeakCode         String?   @db.NVarChar(255)
+  Shift            String?   @db.NVarChar(100)
+  ShopFloor        String?   @db.NVarChar(255)
+  PartName         String?   @db.NVarChar(255)
+  BhChThIm         String?   @db.NVarChar(255)
+  OP               String?   @db.NVarChar(100)
+  FixPos           String?   @db.NVarChar(255)
+  DefectType       String?   @db.NVarChar(255)
+  Dimension        String?   @db.NVarChar(100)
+  Actual           Decimal?  @db.Decimal(18, 4)
+  Qty              Decimal?  @db.Decimal(18, 3)
+  OperatorName     String?   @db.NVarChar(255)
+  LeaderName       String?   @db.NVarChar(255)
+  Decision         String?   @db.NVarChar(255)
+  RejectionReason  String?   @db.NVarChar(Max)
+  TargetDate       DateTime? @db.Date
+  Status           String?   @db.NVarChar(100)
+  CorrectiveAction String?   @db.NVarChar(Max)
+  CreatedBy        String?   @db.NVarChar(255)
+  CreatedAt        DateTime  @default(dbgenerated("sysutcdatetime()"), map: "DF_RejectionEntry_CreatedAt")
+  TransId          String?   @db.NVarChar(512)
+  SerialNo         String?   @db.NVarChar(255)
+  ReturnReason     String?   @db.NVarChar(Max)
+
+  @@index([TransId], map: "IX_RejectionEntry_TransId")
+}
+
+model Shifts {
+  ShiftID   Int    @id(map: "PK__Shifts__C0A838E1969E0F1A") @default(autoincrement())
+  ShiftName String @db.VarChar(50)
+}
+
+model ShopLocations {
+  ShopID       Int    @id(map: "PK__ShopLoca__67C55629BB7207F1") @default(autoincrement())
+  LocationName String @db.VarChar(100)
+}
+
+model Statuses {
+  StatusID   Int    @id(map: "PK__Statuses__C8EE20438613F2D1") @default(autoincrement())
+  StatusName String @db.VarChar(50)
+}
+
+model UserMaster {
+  UserID      Int      @id(map: "PK_UserMaster") @default(autoincrement())
+  EmployeeId  String   @db.VarChar(10)
+  Username    String   @db.VarChar(200)
+  Password    String   @db.NVarChar(200)
+  CreatedDate DateTime @default(now(), map: "DF_UserMaster_CreatedDate") @db.DateTime
+  CreatedBy   String?  @db.VarChar(200)
+  IsActive    Int      @default(1, map: "DF_UserMaster_IsActive")
+  AuthMode    String?  @db.VarChar(50)
+  Department  String?  @db.NVarChar(50)
+  Position    String?  @db.NVarChar(50)
+  Section     String?  @db.VarChar(50)
+  Designation String?  @db.VarChar(Max)
+  logintype   String?  @db.VarChar(Max)
+}
