@@ -72,7 +72,10 @@ export default async function handler(req, res) {
             const parsedProductId = productId ? parseInt(productId, 10) : null;
             if (parsedProductId && !isNaN(parsedProductId)) {
                 const results = await prisma.$queryRaw`EXEC SP_GetEmployeesByProductId @ProductId = ${parsedProductId}`;
-                const formattedResults = toComboBoxOptions(results, 'EmployeeName');
+                const formattedResults = results.map(e => ({
+                    value: e.EmployeeID ? String(e.EmployeeID) : `${e.EmployeeName}`,
+                    label: `${e.EmployeeName} | ${e.EmployeeID}`
+                }));
                 return res.status(200).json(formattedResults);
             }
             return res.status(200).json([]);
