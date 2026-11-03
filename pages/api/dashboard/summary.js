@@ -53,11 +53,17 @@ export default async function handler(req, res) {
             EXEC dbo.Get_Dashboard_Summary @SummaryDate = ${date}
         `;
         const row = rows[0] || {};
+        const productionCount = readNumber(row, "ProductionCount") || readNumber(row, "ProductionQty");
+        const qcCount = readNumber(row, "QcCount");
+        const totalRejection = readNumber(row, "TotalRejection") || readNumber(row, "TotalEntries") || readNumber(row, "RejectionQty");
         return res.status(200).json({
             data: {
-                productionQty: readNumber(row, "ProductionQty"),
-                rejectionQty: readNumber(row, "RejectionQty"),
-                totalEntries: readNumber(row, "TotalEntries"),
+                productionCount,
+                qcCount,
+                totalRejection,
+                productionQty: productionCount,
+                rejectionQty: qcCount,
+                totalEntries: totalRejection,
             },
         });
     } catch (error) {
