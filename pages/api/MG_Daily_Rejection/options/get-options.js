@@ -97,7 +97,11 @@ export default async function handler(req, res) {
                 break;
             case 'decisions':
                 results = await prisma.$queryRaw`EXEC SP_GetDecisions`;
-                formattedResults = toComboBoxOptions(results, 'DecisionName');
+                formattedResults = toComboBoxOptions(results, results[0]?.Name != null ? 'Name' : (results[0]?.Decision != null ? 'Decision' : 'DecisionName'));
+                break;
+            case 'scrapTypes':
+                results = await prisma.$queryRaw`EXEC SP_GetScrapTypes`;
+                formattedResults = toComboBoxOptions(results, results[0]?.Name != null ? 'Name' : (results[0]?.ScrapType != null ? 'ScrapType' : 'ScrapTypeName'));
                 break;
             default:
                 return res.status(400).json({ message: "Invalid type specified." });

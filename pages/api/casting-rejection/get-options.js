@@ -53,8 +53,21 @@ export default async function handler(req, res) {
             return res.status(200).json(result[0] || {});
         }
         if (type === 'decisions') {
-            const results = await prisma.$queryRaw`EXEC SP_GetCastingDecisions`;
-            const formattedResults = toComboBoxOptions(results, 'DecisionName');
+            let results;
+            try {
+                results = await prisma.$queryRaw`EXEC SP_GetDecisions`;
+            } catch (err) {
+                // results = await prisma.$queryRaw`EXEC SP_GetCastingDecisions`;
+                results = await prisma.$queryRaw`EXEC SP_GetDecisions`;
+            }
+            const key = results[0]?.Name != null ? 'Name' : (results[0]?.Decision != null ? 'Decision' : 'DecisionName');
+            const formattedResults = toComboBoxOptions(results, key);
+            return res.status(200).json(formattedResults);
+        }
+        if (type === 'scrapTypes') {
+            const results = await prisma.$queryRaw`EXEC SP_GetScrapTypes`;
+            const key = results[0]?.Name != null ? 'Name' : (results[0]?.ScrapType != null ? 'ScrapType' : 'ScrapTypeName');
+            const formattedResults = toComboBoxOptions(results, key);
             return res.status(200).json(formattedResults);
         }
         if (type === 'dimensions') {
