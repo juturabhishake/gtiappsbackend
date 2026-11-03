@@ -58,6 +58,7 @@ export default async function handler(req, res) {
                 results = await prisma.$queryRaw`EXEC SP_GetDecisions`;
             } catch (err) {
                 // results = await prisma.$queryRaw`EXEC SP_GetCastingDecisions`;
+                console.error("Error fetching decisions:", err);
                 results = await prisma.$queryRaw`EXEC SP_GetDecisions`;
             }
             const key = results[0]?.Name != null ? 'Name' : (results[0]?.Decision != null ? 'Decision' : 'DecisionName');
